@@ -1,5 +1,5 @@
 import { SetStateAction, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StatusBar, StyleSheet, SafeAreaView, View } from 'react-native';
 import Button from './src/components/Button';
 import Display from './src/components/Display';
 
@@ -37,8 +37,9 @@ export default function App() {
 
 	return (
 		<View style={styles.container}>
+			<StatusBar barStyle={'light-content'}/>
 			<Display value={onDisplayValue} />
-			<View style={styles.buttons}>
+			<SafeAreaView style={styles.buttons}>
 				<Button label='AC' triple onClick={clearMemory} />
 				<Button label='/' operation onClick={setOperationFunction} />
 				<Button label='7' onClick={addDigit} />
@@ -56,7 +57,7 @@ export default function App() {
 				<Button label='0' double onClick={addDigit} />
 				<Button label=',' onClick={addDigit} />
 				<Button label='=' operation onClick={setOperationFunction} />
-			</View>
+			</SafeAreaView>
 		</View>
 	);
 }
@@ -64,6 +65,8 @@ export default function App() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		backgroundColor: '#202020',
+		justifyContent: 'flex-end',
 	},
 	buttons: {
 		flexDirection: 'row',

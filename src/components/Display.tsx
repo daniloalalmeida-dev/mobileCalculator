@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, Dimensions, View, Text } from 'react-native';
 
 export default (props: any) => {
 	return (
@@ -16,13 +16,13 @@ export default (props: any) => {
 const styles = StyleSheet.create({
 	display: {
 		flex: 1,
-		padding: 20,
 		justifyContent: 'center',
-		backgroundColor: 'rgba(0,0,0,0.6)',
+		backgroundColor: '#202020',
 		alignItems: 'flex-end',
+		margin: 10,
 	},
 	displayValue: {
 		fontSize: 60,
-		color: '#fff',
+		color: 'white',
 	},
 });
