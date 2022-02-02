@@ -4,41 +4,72 @@ import Button from './src/components/Button';
 import Display from './src/components/Display';
 
 export default function App() {
+	const [initialState, setInitialState] = useState({
+		displayValue: '0',
+		clearDisplay: false,
+		operation: null,
+		values: [0, 0],
+		current: 0,
+	});
 
-	const [onDisplayValue, setOnDisplayValue] = useState('0')
-	const [operator, setOperator] = useState('')
-	const [storedValue, setStoredValue] = useState('0')
-	const [result, setResult] = useState([])
+	const [state, setState] = useState({ ...initialState });
 
 	const addDigit = (num: string) => {
-		if (!onDisplayValue.includes(',') || num !== ',') {
-			setOnDisplayValue(`${(onDisplayValue + num).replace(/^0+/, '')}`) //A expressão regular substitui o '0' e a ',' por vazio.
-		}
-	}
+		const clearDisplay = state.displayValue === '0' || state.clearDisplay;
 
-	const clearMemory = () => {
-		setOnDisplayValue('0');
-		setStoredValue('0');
+		if (num === '.' && !clearDisplay && state.displayValue.includes('.')) {
+			return;
+		}
+
+		const currentValue = clearDisplay ? '' : state.displayValue;
+		const displayValue = currentValue + num;
+		setState({ ...state, displayValue, clearDisplay: false });
+
+		if (num !== '.') {
+			const newValue = parseFloat(displayValue);
+			const values = [...state.values];
+			values[state.current] = newValue;
+			setState({ ...state, values, displayValue });
+		}
 	};
 
-	const setOperationFunction = (operation: string) => {
-		
-		setOperator(operation)
-		setStoredValue(onDisplayValue)
-		setOnDisplayValue('0')
-		if (operation === '=') {
+	const clearMemory = () => {
+		setState({ ...initialState });
+	};
+
+	const setOperationFunction = (operation: null) => {
+		if (state.current === 0) {
+			setState({
+				...state,
+				operation,
+				current: 1,
+				displayValue: '0',
+				//clearDisplay: true
+			});
+		} else {
+			const equals = operation === '=';
+			const values = [...state.values];
 			try {
-				setOnDisplayValue(eval(`${storedValue} ${operator} ${onDisplayValue}`))
-		} catch (e) {
-			console.warn(e)
-		}
+				values[0] = eval(`${values[0]} ${state.operation} ${values[1]}`);
+			} catch (e) {
+				values[0] = state.values[0];
+			}
+
+			values[1] = 0;
+			setState({
+				displayValue: `${values[0]}`,
+				operation: equals ? null : operation,
+				current: equals ? 0 : 1,
+				clearDisplay: !equals,
+				values,
+			});
 		}
 	};
 
 	return (
 		<View style={styles.container}>
-			<StatusBar barStyle={'light-content'}/>
-			<Display value={onDisplayValue} />
+			<StatusBar barStyle={'light-content'} />
+			<Display value={state.displayValue} />
 			<SafeAreaView style={styles.buttons}>
 				<Button label='AC' triple onClick={clearMemory} />
 				<Button label='/' operation onClick={setOperationFunction} />
@@ -55,7 +86,7 @@ export default function App() {
 				<Button label='3' onClick={addDigit} />
 				<Button label='+' operation onClick={setOperationFunction} />
 				<Button label='0' double onClick={addDigit} />
-				<Button label=',' onClick={addDigit} />
+				<Button label='.' onClick={addDigit} />
 				<Button label='=' operation onClick={setOperationFunction} />
 			</SafeAreaView>
 		</View>

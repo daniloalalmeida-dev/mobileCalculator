@@ -27,8 +27,8 @@ export default (props: any) => {
 const styles = StyleSheet.create({
 	button: {
 		fontSize: 30,
-		height: Dimensions.get('window').width / 4,
-		width: Dimensions.get('window').width / 4,
+		height: Dimensions.get('screen').width / 4,
+		width: Dimensions.get('screen').width / 4,
 		padding: 30,
 		justifyContent: 'center',
 		backgroundColor: '#f0f0f0',
